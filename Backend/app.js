@@ -14,7 +14,16 @@ const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "esame-m6-lorenzos-projects-cd0213e7.vercel.app",
+      "http://localhost:5173",
+    ],
+    credentials: true,
+    allowedHeaders: ["Authorization", "Content-Type"],
+  })
+);
 app.use(express.json());
 
 /* app.use(verifiedToken); */
