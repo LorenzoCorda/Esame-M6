@@ -1,0 +1,10 @@
+.custom-img {
+  height: 250px;
+}
+
+.custom-card .card {
+  background-color: darkgray;
+  cursor: pointer;
+  color: #db852e;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
