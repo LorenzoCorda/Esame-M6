@@ -130,7 +130,7 @@ const Headers = () => {
   };
 
   const onRedirectGithub = () => {
-    window.location.href = "http://localhost:9099/github";
+    window.location.href = `${import.meta.env.VITE_SERVER_URL}/github`;
   };
 
   return (
