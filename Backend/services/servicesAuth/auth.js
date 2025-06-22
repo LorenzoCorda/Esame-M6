@@ -9,20 +9,18 @@ const login = async (email, password) => {
   const author = await AuthorSchema.findOne({ email });
 
   if (!author) {
-    console.log("Email not found:", email);
     throw new AuthorNotFoundException();
   }
 
   const isPasswordValid = await bcrypt.compare(password, author.password);
 
   if (!isPasswordValid) {
-    console.log("Password mismatch for email:", email);
     throw new InvalidPasswordException();
   }
   const token = jwt.sign(
     {
-      name: author.firstName,
-      surName: author.lastName,
+      name: author.name,
+      surName: author.surName,
       email: author.email,
     },
 

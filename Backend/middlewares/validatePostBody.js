@@ -22,11 +22,11 @@ const postBodyValidation = [
     .optional()
     .isInt({ min: 1 })
     .withMessage("Read time must be at least 1 minute!"),
-  body("author")
+  /*  body("author")
     .notEmpty()
     .withMessage("The field is obligatory!")
     .isString()
-    .withMessage("Author must be a string!"),
+    .withMessage("Author must be a string!"), */
   body("content")
     .notEmpty()
     .withMessage("The field is obligatory!")

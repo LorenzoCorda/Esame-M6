@@ -5,6 +5,7 @@ const findAll = async (page, pageSize) => {
     .limit(pageSize)
     .skip((page - 1) * pageSize)
     .sort({ createdAt: -1 })
+    .populate("author", "name surName email")
     .select();
 
   const totalPosts = await PostSchema.countDocuments();

@@ -4,11 +4,13 @@ const express = require("express");
 /* const loggerMiddleware = require("./middlewares/logger"); */
 const PORT = 9099;
 const startServer = require("./config/db");
+const errorHandler = require("./middlewares/errorHandler");
 
+//import routes
 const authorRoute = require("./routes/routesAuthors/authors");
 const postRoute = require("./routes/routesPosts/post");
 const authRoute = require("./routes/routesAuth/auth");
-const errorHandler = require("./middlewares/errorHandler");
+const oauthRoute = require("./routes/routesOauth/oauth");
 /* const verifiedToken = require("./middlewares/verifiedToken"); */
 /* const path = require("path"); */
 
@@ -35,6 +37,7 @@ app.use(express.json());
 app.use("/authors", authorRoute);
 app.use("/posts", postRoute);
 app.use("/auth", authRoute);
+app.use("/", oauthRoute);
 
 app.use(errorHandler);
 

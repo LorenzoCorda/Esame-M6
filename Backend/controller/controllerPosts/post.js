@@ -1,4 +1,3 @@
-const { request, response } = require("express");
 const postService = require("../../services/servicesPost/post");
 const EmailServices = require("../../services/servicesEmail/email");
 
