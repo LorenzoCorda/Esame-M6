@@ -20,8 +20,9 @@ app.use(
   cors({
     origin: [
       /* "https://esame-m6-lorenzos-projects-cd0213e7.vercel.app", */
-      "https://esame-m6-git-main-lorenzos-projects-cd0213e7.vercel.app", // dominio esatto da cui arriva la richiesta
-      "https://esame-m6-lorenzos-projects-cd0213e7.vercel.app",
+      /* "https://esame-m6-git-main-lorenzos-projects-cd0213e7.vercel.app", // dominio esatto da cui arriva la richiesta
+      "https://esame-m6-lorenzos-projects-cd0213e7.vercel.app", */
+      "https://esame-m6.vercel.app",
       "http://localhost:5173",
     ],
     credentials: true,
