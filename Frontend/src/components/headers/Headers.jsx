@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -7,7 +7,10 @@ import "./headers.css";
 
 const Headers = () => {
   const [show, setShow] = useState(false);
-  const [modalType, setModalType] = useState("signup"); // 'signup' o 'login'
+  const [modalType, setModalType] = useState("signup");
+
+  const [successMessage, setSuccessMessage] = useState("");
+
   const [formData, setFormdata] = useState({
     name: "",
     surName: "",
@@ -17,6 +20,10 @@ const Headers = () => {
   });
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.removeItem("token");
+  }, []);
 
   const handleClose = () => setShow(false);
 
@@ -32,19 +39,6 @@ const Headers = () => {
       [name]: value,
     });
   };
-
-  /* const onSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (modalType === "signup") {
-        // chiamata API per registrazione
-      } else {
-        // chiamata API per login
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }; */
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -78,17 +72,22 @@ const Headers = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Errore nella registrazione");
+        throw new Error(data.message || "Registration error");
       }
+
+      setSuccessMessage("Successful registration!");
+
+      /* setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000); */
 
       localStorage.setItem("token", data.token);
 
-      alert("Registrazione avvenuta con successo!");
-      /* navigate("/auth/login"); */
+      /* alert("Successful registration!"); */
 
       setShow(false);
     } catch (error) {
-      console.error("Errore registrazione:", error.message);
+      console.error("Registration error", error.message);
       alert(error.message);
     }
   };
@@ -111,37 +110,57 @@ const Headers = () => {
 
       const data = await response.json();
 
+      console.log("Risposta login:", data);
+
       if (!response.ok) {
         throw new Error(data.message || "Errore nel login");
       }
 
       localStorage.setItem("token", data.token);
+      console.log(
+        "Token salvato in localStorage:",
+        localStorage.getItem("token")
+      );
       navigate("/dashboard");
       setShow(false);
     } catch (error) {
-      console.error("Errore login:", error.message);
+      console.error("Error login:", error.message);
       alert(error.message);
     }
+  };
+
+  const onRedirectGithub = () => {
+    window.location.href = "http://localhost:9099/github";
   };
 
   return (
     <>
       <div className="background-img">
-        <div className="d-flex justify-content-center gap-3 align-items-center">
-          <Button
-            className="mt-5"
-            variant="secondary"
-            onClick={() => handleShow("signup")}
-          >
-            Sign Up
-          </Button>
-          <Button
-            className="mt-5"
-            variant="secondary"
-            onClick={() => handleShow("login")}
-          >
-            Login
-          </Button>
+        <div className="d-flex justify-content-center flex-column align-items-center">
+          <div className="mt-4">
+            <h1 className="d-flex justify-content-center text-secondary">
+              Welcome to Homepage
+            </h1>
+            <h3 className="text-white">
+              Sign Up to share your story or your thoughts!
+            </h3>
+          </div>
+          <div className="d-flex gap-4">
+            <Button
+              className="mt-5"
+              variant="secondary"
+              onClick={() => handleShow("signup")}
+            >
+              Sign Up
+            </Button>
+            <Button
+              className="mt-5"
+              variant="secondary"
+              onClick={() => handleShow("login")}
+            >
+              Login
+            </Button>
+          </div>
         </div>
 
         <Modal show={show} onHide={handleClose}>
@@ -202,104 +221,23 @@ const Headers = () => {
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
+            <div>
+              <button onClick={onRedirectGithub} className="btn btn-dark">
+                GitHub Login
+              </button>
+            </div>
           </Modal.Footer>
         </Modal>
       </div>
+      <>
+        <div className="custom-div-message d-flex justify-content-center align-content-center">
+          {successMessage && (
+            <div className="custom-message">{successMessage}</div>
+          )}
+        </div>
+      </>
     </>
   );
 };
 
 export default Headers;
-
-/* const Headers = () => {
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const onChangeInput = (e) => {
-    const { name, value } = e.target;
-    setFormdata({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const onSubmit = async (e) =>{
-    e.preventDefault()
-    try {
-        const 
-    } catch (error) {
-        
-    }
-
-  }
-
-  return (
-    <>
-      <div className="background-img">
-        <div className="d-flex justify-content-center gap-3 align-items-center">
-          <Button className="mt-5" variant="secondary" onClick={handleShow}>
-            Sign Up
-          </Button>
-          <Button className="mt-5" variant="secondary" onClick={handleShow}>
-            Login
-          </Button>
-        </div>
-
-        <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Sign Up</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form onSubmit={onSubmit}>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label>Name</Form.Label>
-                <Form.Control
-                  name="name"
-                  type="text"
-                  placeholder="Name"
-                  autoFocus
-                />
-                <Form.Label>Surname</Form.Label>
-                <Form.Control
-                  name="surName"
-                  type="text"
-                  placeholder="Surname"
-                  autoFocus
-                />
-                <Form.Label>email</Form.Label>
-                <Form.Control
-                  name="email"
-                  type="email"
-                  placeholder="email"
-                  autoFocus
-                />
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  name="password"
-                  type="text"
-                  placeholder="Password"
-                  autoFocus
-                />
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="warning" onClick={handleClose}>
-              Save
-            </Button>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </div>
-    </>
-  );
-};
-
-export default Headers; */

@@ -4,6 +4,7 @@ import { PostsProvider } from "./components/contexts/PostsContext";
 import PostDetailPage from "../pages/PostDetailsPage";
 import ProtectedRoutes from "./middleware/ProtectedRoutes";
 import DashBoard from "../pages/DashBoard";
+import Success from "../pages/Success";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
             <Route element={<ProtectedRoutes />}>
               <Route path="/dashboard" element={<DashBoard />} />
             </Route>
+            <Route path="/success" element={<Success />} />
 
             {/* <Route path="*" element={<NotFoundPage />} /> */}
           </Routes>

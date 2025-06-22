@@ -3,6 +3,7 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import "./addPostForm.css";
 import { PostsContext } from "../contexts/PostsContext";
+import { Spinner } from "react-bootstrap";
 
 const AddPostForm = () => {
   const [title, setTitle] = useState("");
@@ -11,8 +12,8 @@ const AddPostForm = () => {
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  /* const [timeOut, setTimeout] = useState(null); */
   const { getPosts } = useContext(PostsContext);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -20,7 +21,6 @@ const AddPostForm = () => {
     category: "",
     cover: "",
   });
-  /* const [readTime, setReadTime] = useState(""); */
 
   const addAuthorInput = (e) => {
     setAuthor(e.target.value);
@@ -32,9 +32,7 @@ const AddPostForm = () => {
   const addCategoryInput = (e) => {
     setCategory(e.target.value);
   };
-  /* const addFileInput = (e) => {
-    setFile(e.target.files[0]);
-  }; */
+
   const addContentInput = (e) => {
     setContent(e.target.value);
   };
@@ -54,9 +52,7 @@ const AddPostForm = () => {
           body: fileData,
         }
       );
-      /* return await response.json(); */
       const data = await response.json();
-      /* console.log("Upload riuscito. URL immagine:", data.img); */
       return data.img;
     } catch (e) {
       console.log(e);
@@ -65,11 +61,10 @@ const AddPostForm = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    /* console.error("nussun file caricato", file); */
     try {
       const uploadedFile = await uploadFile(file);
-      /* console.log(uploadedFile); */
       const payload = {
         author: author,
         title: title,
@@ -78,7 +73,6 @@ const AddPostForm = () => {
         cover: uploadedFile,
         content: content,
       };
-      console.log(payload);
 
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/posts/create`,
@@ -103,20 +97,20 @@ const AddPostForm = () => {
           cover: "",
         });
 
-        // triggera aggiornamento dei post se hai una funzione tipo `fetchPosts()`
         if (typeof getPosts === "function") {
           getPosts();
         }
 
         setTimeout(() => {
           setSuccessMessage("");
-        }, 6000);
+        }, 2500);
       } else {
-        console.error("Errore nel creare il post");
+        console.error("Error creating post");
       }
-      /* return response.json();  */ // <-- spostato qui
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -148,15 +142,11 @@ const AddPostForm = () => {
             name="category"
             placeholder="Category"
           />
-          {/* <input
-            onChange={addReadTimeInput}
-            className="form-control"
-            type="text"
-            name="readTime"
-            placeholder="ReadTime"
-          /> */}
+          {/*  <select name="" id="">
+            <option value="">ciao</option>
+          </select> */}
+
           <input
-            /* onChange={addCoverInput} */
             onChange={(e) => setFile(e.target.files[0])}
             className="form-control"
             type="file"
@@ -171,7 +161,17 @@ const AddPostForm = () => {
               style={{ height: "100px" }}
             />
           </FloatingLabel>
-          <button className="btn btn-warning ">SEND</button>
+
+          <button className="btn btn-warning" type="submit" disabled={loading}>
+            {loading ? (
+              <>
+                <Spinner animation="border" size="sm" role="status" />
+                <span className="ms-2">Creating...</span>
+              </>
+            ) : (
+              "SEND"
+            )}
+          </button>
 
           <div>
             {successMessage && (

@@ -1,10 +1,90 @@
-import React, { useContext } from "react";
-/* import "./PostDetailsStyle.css"; */
+import React, { useContext, useState, useEffect } from "react";
+import "./detailsPost.css";
 import Spinner from "react-bootstrap/Spinner";
 import { PostsContext } from "../contexts/PostsContext";
 
 const PostDetail = ({ post }) => {
   const { isPostsLoading, setIsPostsLoading } = useContext(PostsContext);
+
+  const [author, setAuthor] = useState("");
+  const [text, setText] = useState("");
+  const [comments, setComments] = useState([]);
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingText, setEditingText] = useState("");
+
+  useEffect(() => {
+    if (post?.comments?.length > 0) {
+      setComments(post.comments);
+    }
+  }, [post]);
+
+  const startEditing = (comment) => {
+    setEditingCommentId(comment._id);
+    setEditingText(comment.text);
+  };
+
+  const saveEdit = async () => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/posts/${
+          post._id
+        }/comments/${editingCommentId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: editingText }),
+        }
+      );
+      if (res.ok) {
+        const updated = await res.json();
+        setComments(comments.map((c) => (c._id === updated._id ? updated : c)));
+        setEditingCommentId(null);
+        setEditingText("");
+      }
+    } catch (err) {
+      console.error("Errore modifica commento", err);
+    }
+  };
+
+  const handleDelete = async (commentId) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/posts/${
+          post._id
+        }/comments/${commentId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (res.ok) {
+        setComments(comments.filter((c) => c._id !== commentId));
+      }
+    } catch (err) {
+      console.error("Errore eliminazione commento", err);
+    }
+  };
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/posts/${post._id}/comments`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ author, text }),
+        }
+      );
+      if (res.ok) {
+        const newComment = await res.json(); // supponiamo che ritorni il commento salvato
+        setComments([...comments, newComment]);
+        setAuthor("");
+        setText("");
+      }
+    } catch (err) {
+      console.error("Errore invio commento", err);
+    }
+  };
 
   if (isPostsLoading) {
     return (
@@ -19,85 +99,98 @@ const PostDetail = ({ post }) => {
 
   return (
     <div className="row">
-      <div className="col-12 d-flex flex-column">
-        <div className="mt-4 p-3">
-          <div className="d-flex justify-content-center">
-            <img className="img-custom" src={post.cover} alt="" />
+      <div className="col-12">
+        <div className="d-flex flex-column mt-5">
+          <img className="img-custom w-100" src={post.cover} alt="cover" />
+          <div className="d-flex flex-column align-items-center mt-5">
+            <h3 className="text-warning">
+              <strong>{post.title}</strong>
+            </h3>
+            <h5 className="text-danger">
+              <strong>Category:</strong> {post.category}
+            </h5>
+            <h6>
+              <strong>Content:</strong>
+            </h6>
+            <div className="d-flex border rounded p-2 pb-4">{post.content}</div>
           </div>
-          <div className="details-custom d-flex flex-column m-4">
-            <div className="d-flex flex-column align-items-center text-start">
-              <h2 className="text-warning">
-                <strong>{post.title}</strong>
-              </h2>
-              <h5 className="text-warning">
-                <strong>Category:</strong> {post.category}
-              </h5>
-            </div>
+        </div>
+        <div className="d-flex flex-column">
+          {comments.map((comment) => (
+            <div key={comment._id} className="mb-2 p-2 border rounded">
+              <strong>{comment.author}</strong>
 
-            {/* {Form comments} */}
-            {/* <div className="mt-5">
-              <h4>Add a Comment:</h4>
-              <form onSubmit={handleSubmit}>
-                <div className="mb-2">
+              {editingCommentId === comment._id ? (
+                <div className="d-flex flex-column gap-2 mt-2">
                   <textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
+                    value={editingText}
+                    onChange={(e) => setEditingText(e.target.value)}
+                    rows={3}
                     className="form-control"
-                    placeholder="Write a comment..."
-                    required
                   />
-                </div>
-                <div className="mb-2">
-                  <label>Rating (1-10): </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={rating}
-                    onChange={(e) => setRating(e.target.value)}
-                    className="form-control w-25"
-                    required
-                  />
-                </div>
-                <button type="submit" className="btn btn-success">
-                  Send
-                </button>
-              </form>
-
-              <div className="mt-4">
-                <h5>Comments:</h5>
-                {commentsList.length === 0 && <p>No comments yet.</p>}
-                <ul className="list-group">
-                  {commentsList.map((c) => (
-                    <li
-                      key={c.id}
-                      className="list-group-item d-flex justify-content-between align-items-center"
+                  <div className="d-flex gap-2">
+                    <button
+                      onClick={saveEdit}
+                      className="btn btn-sm btn-success"
                     >
-                      <div>
-                        <strong>Rating:</strong> {c.rating}/10
-                        <br />
-                        {c.text}
-                      </div>
-                      <div className="btn-group">
-                        <button
-                          className="btn btn-outline-primary btn-sm"
-                          onClick={() => handleEdit(c.id)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="btn btn-outline-danger btn-sm ms-2"
-                          onClick={() => handleDelete(c.id)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div> */}
-          </div>
+                      Salva
+                    </button>
+                    <button
+                      onClick={() => setEditingCommentId(null)}
+                      className="btn btn-sm btn-secondary"
+                    >
+                      Annulla
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <p>{comment.text}</p>
+                  <div>
+                    <button
+                      className="btn btn-sm btn-outline-primary me-2"
+                      onClick={() => startEditing(comment)}
+                    >
+                      Modifica
+                    </button>
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() => handleDelete(comment._id)}
+                    >
+                      Elimina
+                    </button>
+                  </div>
+                </>
+              )}
+              <small>{new Date(comment.createdAt).toLocaleString()}</small>
+            </div>
+          ))}
+          <h3 className="d-flex justify-content-center mt-4 mb-4">
+            What do you think about this post?
+          </h3>
+          <form
+            className="d-flex flex-column justify-content-center align-items-center"
+            onSubmit={handleCommentSubmit}
+          >
+            <input
+              type="text"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              placeholder="Il tuo nome"
+              required
+              className="mb-2"
+            />
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Scrivi un commento..."
+              rows={3}
+              required
+            />
+            <button type="submit" className="btn btn-warning mt-2 mb-4">
+              Invia commento
+            </button>
+          </form>
         </div>
       </div>
     </div>
@@ -105,7 +198,3 @@ const PostDetail = ({ post }) => {
 };
 
 export default PostDetail;
-
-{
-  /* List comments */
-}

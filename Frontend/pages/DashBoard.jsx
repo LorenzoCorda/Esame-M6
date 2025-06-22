@@ -3,14 +3,24 @@ import BaseLayout from "../layouts/BaseLayout";
 import AddPostForm from "../src/components/addPostForm/addPostForm";
 import Posts from "../src/components/posts/Posts";
 import useSession from "../src/hooks/useSession";
+import { useState, useEffect } from "react";
 
 const DashBoard = () => {
   const navigate = useNavigate();
+  const [showWelcome, setShowWelcome] = useState(true);
 
   const logout = () => {
     localStorage.removeItem("token");
     navigate("/");
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowWelcome(false);
+    }, 5000);
+
+    return () => clearTimeout(timer); // pulizia se il componente viene smontato prima
+  }, []);
 
   const user = useSession();
 
@@ -19,9 +29,17 @@ const DashBoard = () => {
       <BaseLayout>
         <div className="container">
           <div className="row">
-            <div className="col">
-              <h1>{`Benvenuto ${user.name}`}</h1>
-              <button onClick={logout}>Logout</button>
+            <div className="col d-flex justify-content-center mt-3">
+              {showWelcome && (
+                <h1>{`Welcome ${
+                  user?.name || user?.displayName || user?.username || "Utente"
+                }`}</h1>
+              )}
+              <div className="end-0 position-absolute m-4">
+                <button className="btn btn-danger" onClick={logout}>
+                  Logout
+                </button>
+              </div>
             </div>
           </div>
         </div>
