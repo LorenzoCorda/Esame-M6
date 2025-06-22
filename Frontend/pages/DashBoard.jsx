@@ -29,13 +29,13 @@ const DashBoard = () => {
       <BaseLayout>
         <div className="container">
           <div className="row">
-            <div className="col d-flex justify-content-center mt-3">
+            <div className="col d-flex justify-content-between mt-3">
               {showWelcome && (
-                <h1>{`Welcome ${
+                <h3>{`Welcome ${
                   user?.name || user?.displayName || user?.username || "Utente"
-                }`}</h1>
+                }`}</h3>
               )}
-              <div className="end-0 position-absolute m-4">
+              <div className="end-0 position-absolute me-2">
                 <button className="btn btn-danger" onClick={logout}>
                   Logout
                 </button>
