@@ -89,11 +89,12 @@ const createAuthor = async (request, response) => {
       author,
     });
   } catch (error) {
-    response.status(500).send({
-      statusCode: 500,
-      message: "Internal server error",
-      error: error.message,
-    });
+    if (error.statusCode) {
+      return response.status(error.statusCode).send({
+        statusCode: error.statusCode,
+        message: error.message,
+      });
+    }
   }
 };
 

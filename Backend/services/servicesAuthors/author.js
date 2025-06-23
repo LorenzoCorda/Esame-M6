@@ -1,43 +1,8 @@
 const AuthorSchema = require("../../models/author");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const EmailAlreadyUsedException = require("../../exception/auth/emailAlreadyUsedException");
 const UserNotFoundException = require("../../exception/author/authorNotFoundException");
-/* const InvalidPasswordException = require("../../exception/author/invalidPasswordException"); */
-
-/* const signUp = async ({ firstName, lastName, email, dob, password }) => {
-  const existingUser = await AuthorSchema.findOne({ email });
-  if (existingUser) {
-    throw new UserNotFoundException(); // Crea questa classe se non l'hai
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10); // 10 salt rounds
-
-  const newUser = new AuthorSchema({
-    firstName,
-    lastName,
-    email,
-    dob,
-    password: hashedPassword,
-  });
-
-  await newUser.save();
-
-  const token = jwt.sign(
-    {
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      email: newUser.email,
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: "5m",
-    }
-  );
-
-  return {
-    token,
-  };
-}; */
 
 const findAll = async (page, pageSize) => {
   const authors = await AuthorSchema.find()
@@ -70,12 +35,20 @@ const findByName = async (name) => {
 };
 
 const createAuthor = async (body) => {
+  const existingAuthor = await AuthorSchema.findOne({ email: body.email });
+
+  if (existingAuthor) {
+    throw new EmailAlreadyUsedException();
+  }
+
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(body.password, salt);
+
   const newAuthor = new AuthorSchema({
     ...body,
     password: hashedPassword,
   });
+
   const authorToSave = await newAuthor.save();
 
   const token = jwt.sign(
@@ -93,15 +66,6 @@ const createAuthor = async (body) => {
     token,
   };
 };
-
-/* const createAuthor = async (body) => {
-  const newAuthor = new AuthorSchema(body);
-  const authorToSave = await newAuthor.save();
-  return {
-    message: "Author saved successfully",
-    author: authorToSave,
-  };
-}; */
 
 const updateAuthor = async (authorPayload, id) => {
   const options = { new: true };

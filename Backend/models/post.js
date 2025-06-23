@@ -1,5 +1,24 @@
 const mongoose = require("mongoose");
 
+const commentSchema = new mongoose.Schema({
+  author: {
+    type: String,
+    required: [true, "Author is required"],
+    minlength: [2, "Author must be at least 2 characters"],
+    trim: true,
+  },
+  text: {
+    type: String,
+    required: [true, "Comment text is required"],
+    minlength: [3, "Comment must be at least 3 characters"],
+    trim: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const PostSchema = new mongoose.Schema(
   {
     category: {
@@ -34,13 +53,7 @@ const PostSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    comments: [
-      {
-        author: { type: String, required: true },
-        text: { type: String, required: true },
-        createdAt: { type: Date, default: Date.now },
-      },
-    ],
+    comments: [commentSchema],
   },
   { timestamps: true, strict: true }
 );
