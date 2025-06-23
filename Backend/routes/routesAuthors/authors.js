@@ -8,8 +8,10 @@ const {
 } = require("../../middlewares/validateUserBody");
 
 authors.get("/", authorController.findAll);
-authors.get("/:authorId", authorController.findOne);
 authors.get("/search/name", authorController.findByName);
+
+authors.get("/:authorId", authorController.findOne);
+
 authors.post(
   "/create",
   userBodyValidation,

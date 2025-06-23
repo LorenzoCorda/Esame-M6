@@ -13,7 +13,7 @@ class EmailServices {
         subject,
         html: message,
       };
-      await sgMail.send(messageOption).then(() => console.log("email inviata"));
+      await sgMail.send(messageOption).then(() => console.log("email sent"));
     } catch (error) {
       console.error(error);
     }

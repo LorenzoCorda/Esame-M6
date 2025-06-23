@@ -1,7 +1,6 @@
 require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
-/* const loggerMiddleware = require("./middlewares/logger"); */
 const PORT = 9099;
 const startServer = require("./config/db");
 const errorHandler = require("./middlewares/errorHandler");
@@ -11,8 +10,6 @@ const authorRoute = require("./routes/routesAuthors/authors");
 const postRoute = require("./routes/routesPosts/post");
 const authRoute = require("./routes/routesAuth/auth");
 const oauthRoute = require("./routes/routesOauth/oauth");
-/* const verifiedToken = require("./middlewares/verifiedToken"); */
-/* const path = require("path"); */
 
 const app = express();
 
@@ -25,10 +22,6 @@ app.use(
 );
 app.use(express.json());
 
-/* app.use(verifiedToken); */
-
-/* app.use("/uploads", express.static(path.join(__dirname, "./uploads"))); */
-/* app.use(loggerMiddleware); */
 app.use("/authors", authorRoute);
 app.use("/posts", postRoute);
 app.use("/auth", authRoute);

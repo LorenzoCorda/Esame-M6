@@ -33,7 +33,6 @@ const findByCategory = async (category) => {
 };
 
 const createPosts = async (body) => {
-  console.log(body);
   const newPost = new PostSchema(body);
   const postToSave = await newPost.save();
   return {

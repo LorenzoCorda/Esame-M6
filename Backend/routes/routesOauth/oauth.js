@@ -33,7 +33,6 @@ passport.use(
       callbackURL: process.env.GITHUB_CALLBACK_URL,
     },
     (accessToken, refreshToken, profile, done) => {
-      console.log("USER PRIFILE", profile);
       return done(null, profile);
     }
   )

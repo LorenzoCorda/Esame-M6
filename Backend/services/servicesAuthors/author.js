@@ -2,7 +2,8 @@ const AuthorSchema = require("../../models/author");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const EmailAlreadyUsedException = require("../../exception/auth/emailAlreadyUsedException");
-const UserNotFoundException = require("../../exception/author/authorNotFoundException");
+const EmailServices = require("../servicesEmail/email");
+const emailService = new EmailServices();
 
 const findAll = async (page, pageSize) => {
   const authors = await AuthorSchema.find()
@@ -50,6 +51,14 @@ const createAuthor = async (body) => {
   });
 
   const authorToSave = await newAuthor.save();
+
+  emailService
+    .send(
+      authorToSave.email,
+      "Epiblog - Welcome!",
+      `<p>Ciao ${authorToSave.name},<br/>Grazie per esserti registrato su Epiblog! 🎉</p>`
+    )
+    .catch((err) => console.error("Error sending email:", err));
 
   const token = jwt.sign(
     {

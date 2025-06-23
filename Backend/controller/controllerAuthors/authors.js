@@ -82,11 +82,12 @@ const findByName = async (request, response) => {
 const createAuthor = async (request, response) => {
   try {
     const { body } = request;
-    const author = await authorService.createAuthor(body);
+    const result = await authorService.createAuthor(body);
+
     response.status(201).send({
       statusCode: 201,
       message: "Author created",
-      author,
+      ...result,
     });
   } catch (error) {
     if (error.statusCode) {
@@ -95,6 +96,12 @@ const createAuthor = async (request, response) => {
         message: error.message,
       });
     }
+
+    response.status(500).send({
+      statusCode: 500,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 

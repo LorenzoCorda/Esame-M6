@@ -1,7 +1,4 @@
 const postService = require("../../services/servicesPost/post");
-const EmailServices = require("../../services/servicesEmail/email");
-
-const email = new EmailServices();
 
 const findAll = async (request, response) => {
   try {
@@ -17,18 +14,6 @@ const findAll = async (request, response) => {
       });
     }
 
-    /*  const emailService = new EmailService();
-    await emailService.send(
-      email,
-      "Epiblog - Welcome!",
-      `<p>Hi ${author.name},<br/>Thank you for joining our blog. 🎉</p>`
-    ); */
-
-    /* await email.send(
-      "lolli.corda98@gmail.com",
-      "test sendgrid",
-      "this is my first email"
-    ); */
     response.status(200).send({
       page: Number(page),
       totalPages,
@@ -106,7 +91,7 @@ const createPost = async (request, response) => {
       post,
     });
   } catch (error) {
-    console.error("Errore durante la creazione del post:", error);
+    console.error("Error while creating post:", error);
     response.status(500).send({
       statusCode: 500,
       message: "Internal server error",

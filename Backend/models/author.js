@@ -27,10 +27,6 @@ const AuthorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    /*  avatar: {
-      type: String,
-      required: true,
-    }, */
     role: {
       type: String,
       enum: ["user", "admin"],
@@ -39,15 +35,6 @@ const AuthorSchema = new mongoose.Schema(
   { timestamps: true, strict: true }
 );
 
-/* AuthorSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-
-  try {
-    this.password = await bcrypt.hash(this.password, 12);
-  } catch (error) {
-    next(error);
-  }
-}); */
 AuthorSchema.pre("findOneAndUpdate", async function (next) {
   const update = this.getUpdate();
 
