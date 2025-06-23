@@ -108,7 +108,7 @@ const PostDetail = ({ post }) => {
           </button>
         </div>
         <div className="d-flex flex-column mb-4 border rounded mt-5 ms-5 me-5">
-          <img className="img-custom w-100" src={post.cover} alt="cover" />
+          <img className="img-custom mt-3 w-100" src={post.cover} alt="cover" />
           <div className="d-flex flex-column align-items-center mt-5">
             <h3 className="text-warning">
               <strong>{post.title}</strong>

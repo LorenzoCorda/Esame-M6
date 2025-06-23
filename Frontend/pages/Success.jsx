@@ -20,8 +20,8 @@ const Success = () => {
   }, [token, navigate]);
 
   return (
-    <div className="d-flex bg-dark">
-      <h2 className="d-flex justify-content-center mt-4 align-items-center">
+    <div className="d-flex">
+      <h2 className="d-flex justify-content-center mt-5 align-items-center">
         Login avvenuto con successo, verrai reindirizzato nella Dashboard!
       </h2>
     </div>
