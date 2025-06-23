@@ -156,15 +156,21 @@ const Headers = () => {
     <>
       <div className="background-img">
         <div className="d-flex justify-content-center flex-column align-items-center">
-          <div className="mt-4">
-            <h1 className="d-flex justify-content-center text-secondary">
+          <div className="mt-5">
+            <h1 className="d-flex justify-content-center mt-5 text-secondary">
               Welcome to Homepage
             </h1>
-            <h3 className="text-white">
-              Signup to share your story or your thoughts!
+
+            <h3 className="text-white text-center">
+              Signup to share your story
+              <span className="d-inline d-sm-none">
+                <br />
+              </span>
+              <span className="d-none d-sm-inline">, </span>
+              or your thoughts!
             </h3>
           </div>
-          <div className="d-flex gap-4">
+          <div className="d-flex mt-5 gap-4">
             <Button
               className="mt-5"
               variant="secondary"
