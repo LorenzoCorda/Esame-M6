@@ -43,7 +43,7 @@ const PostDetail = ({ post }) => {
         setEditingText("");
       }
     } catch (err) {
-      console.error("Errore modifica commento", err);
+      console.error("Edit comment error", err);
     }
   };
 
@@ -61,7 +61,7 @@ const PostDetail = ({ post }) => {
         setComments(comments.filter((c) => c._id !== commentId));
       }
     } catch (err) {
-      console.error("Errore eliminazione commento", err);
+      console.error("Comment deletion error", err);
     }
   };
 
@@ -80,7 +80,7 @@ const PostDetail = ({ post }) => {
         setComments([...comments, newComment]);
       }
     } catch (err) {
-      console.error("Errore invio commento", err);
+      console.error("Error sending comment", err);
     }
   };
 

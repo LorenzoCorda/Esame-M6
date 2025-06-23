@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { Github } from "lucide-react";
 import "./headers.css";
-import validateSignupForm from "../../../../Backend/exception/auth/validateSignupForm";
+import validateSignupForm from "../../components/utils/validateSignup/validateSignup";
 
 const Headers = () => {
   const [show, setShow] = useState(false);
@@ -64,7 +64,16 @@ const Headers = () => {
     e.preventDefault();
 
     if (modalType === "signup") {
-      await handleSignup();
+      const validationErrors = validateSignupForm(formData);
+      if (Object.keys(validationErrors).length > 0) {
+        setFormErrors(validationErrors);
+        return;
+      } else {
+        setFormErrors({});
+
+        const success = await handleSignup();
+        if (!success) return;
+      }
     } else {
       await handleLogin();
     }
@@ -77,7 +86,7 @@ const Headers = () => {
 
     if (Object.keys(validationErrors).length > 0) {
       setFormErrors(validationErrors);
-      return;
+      return false;
     }
 
     try {
@@ -94,20 +103,26 @@ const Headers = () => {
 
       if (response.status === 400 && data.message === "Email already used") {
         setFormErrors({ email: "This email is already registered." });
-        return;
+        return false;
       }
 
       if (!response.ok) {
         setFormErrors({ general: data.message || "Registration error" });
-        return;
+        return false;
       }
 
       setSuccessMessage("Successful registration!");
+      setTimeout(() => {
+        setSuccessMessage("");
+        setShow(false);
+      }, 3000);
       localStorage.setItem("token", data.token);
       setShow(false);
+      return true;
     } catch (error) {
       console.error("Registration error", error.message);
       setFormErrors({ general: "Something went wrong. Try again later." });
+      return false;
     }
   };
 
@@ -129,17 +144,12 @@ const Headers = () => {
 
       const data = await response.json();
 
-      console.log("Risposta login:", data);
-
       if (!response.ok) {
         throw new Error(data.message || "Errore nel login");
       }
 
       localStorage.setItem("token", data.token);
-      console.log(
-        "Token salvato in localStorage:",
-        localStorage.getItem("token")
-      );
+
       navigate("/dashboard");
       setShow(false);
     } catch (error) {
@@ -206,6 +216,7 @@ const Headers = () => {
                     name="name"
                     type="text"
                     placeholder="Name"
+                    value={formData.name}
                     onChange={onChangeInput}
                     isInvalid={!!formErrors.name}
                   />
@@ -217,6 +228,7 @@ const Headers = () => {
                     name="surName"
                     type="text"
                     placeholder="Surname"
+                    value={formData.surName}
                     onChange={onChangeInput}
                     isInvalid={!!formErrors.surName}
                   />
@@ -246,13 +258,13 @@ const Headers = () => {
                   name="email"
                   type="email"
                   placeholder="Email"
+                  value={formData.email}
                   onChange={onChangeInput}
+                  isInvalid={!!formErrors.email}
                 />
-                {formErrors.email && (
-                  <Form.Text className="text-danger custom-email-error">
-                    {formErrors.email}
-                  </Form.Text>
-                )}
+                <Form.Control.Feedback type="invalid">
+                  {formErrors.email}
+                </Form.Control.Feedback>
               </div>
 
               <Form.Label>Password</Form.Label>
@@ -260,6 +272,7 @@ const Headers = () => {
                 name="password"
                 type="password"
                 placeholder="Password"
+                value={formData.password}
                 onChange={onChangeInput}
                 isInvalid={!!formErrors.password}
               />
@@ -282,14 +295,12 @@ const Headers = () => {
             </div>
           </Modal.Footer>
         </Modal>
-      </div>
-      <>
         <div className="custom-div-message d-flex justify-content-center align-content-center">
           {successMessage && (
             <div className="custom-message">{successMessage}</div>
           )}
         </div>
-      </>
+      </div>
     </>
   );
 };

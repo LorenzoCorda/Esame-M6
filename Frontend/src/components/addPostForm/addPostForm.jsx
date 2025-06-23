@@ -59,10 +59,6 @@ const AddPostForm = () => {
     }
   };
 
-  /* const addReadTimeInput = (e) => {
-    setReadTime(e.target.value);
-  }; */
-
   const uploadFile = async (file) => {
     const fileData = new FormData();
     fileData.append("img", file);
@@ -107,7 +103,6 @@ const AddPostForm = () => {
         author: author,
         title: title,
         category: category,
-        /* readTime: readTime, */
         cover: uploadedFile,
         content: content,
       };
@@ -126,7 +121,6 @@ const AddPostForm = () => {
 
       if (response.ok) {
         setSuccessMessage("Post created!");
-        // reset form se vuoi
         setFormData({
           title: "",
           content: "",
@@ -187,10 +181,6 @@ const AddPostForm = () => {
           {errors.category && (
             <h6 className="text-danger">{errors.category}</h6>
           )}
-
-          {/*  <select name="" id="">
-            <option value="">ciao</option>
-          </select> */}
 
           <input
             onChange={(e) => {

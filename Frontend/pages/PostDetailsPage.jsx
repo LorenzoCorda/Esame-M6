@@ -8,8 +8,6 @@ const PostDetailPage = () => {
   const { id, asin } = useParams();
   const { posts } = useContext(PostsContext);
 
-  console.log(posts);
-
   const selectedPost = posts.find((post) => String(post._id) === String(id));
 
   return (

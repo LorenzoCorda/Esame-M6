@@ -2,7 +2,6 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useNavigate } from "react-router-dom";
 import "./SinglePost.css";
-import { useState } from "react";
 
 const SinglePost = ({ post }) => {
   const navigate = useNavigate();
@@ -13,8 +12,25 @@ const SinglePost = ({ post }) => {
         <Card>
           <Card.Img className="custom-img" variant="top" src={post.cover} />
           <Card.Body>
-            <Card.Title className="text-warning">{post.title}</Card.Title>
-            <Card.Text className="text-truncate">{post.content}</Card.Text>
+            <Card.Title className="text-warning">
+              <span className="text-dark">Author:</span>
+              {post.author}
+            </Card.Title>
+
+            <Card.Text className="text-warning">
+              <span className="text-dark">Title:</span>
+              {post.title}
+            </Card.Text>
+            <Card.Text className="text-truncate">
+              <span className="text-dark">Category:</span>
+
+              {post.category}
+            </Card.Text>
+            <span className="text-dark">Content:</span>
+
+            <Card.Text className="text-truncate text-white">
+              {post.content}
+            </Card.Text>
             <Button
               className="custom-btn"
               onClick={() => navigate(`/post/${post._id}`)}

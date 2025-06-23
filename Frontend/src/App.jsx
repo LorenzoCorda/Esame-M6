@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "../pages/HomePage";
-import { PostsProvider } from "./components/contexts/PostsContext";
+import { PostsProvider } from "../src/components/contexts/PostsContext";
 import PostDetailPage from "../pages/PostDetailsPage";
 import ProtectedRoutes from "./middleware/ProtectedRoutes";
 import DashBoard from "../pages/DashBoard";
@@ -29,17 +29,6 @@ const App = () => {
         </BrowserRouter>
       </PostsProvider>
     </>
-
-    /*  <div className="row">
-        {posts &&
-          posts.length > 0 &&
-          posts?.map((post) => (
-            <div className="col-12 col-md-6 col-lg-4">
-              <img src={post.img} alt={post.title} />
-              <p>{post.title}</p>
-            </div>
-          ))}
-      </div> */
   );
 };
 

@@ -14,9 +14,7 @@ export const PostsProvider = ({ children }) => {
       const data = await response.json();
       setPosts(data.posts);
     } catch (error) {
-      console.error("non sono riuscito a prendere nulla");
-
-      /* console.log(e); */
+      console.error("I couldn't catch anything");
     } finally {
       setIsPostsLoading(false);
     }
