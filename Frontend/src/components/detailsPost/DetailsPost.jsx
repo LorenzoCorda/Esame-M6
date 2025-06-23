@@ -2,15 +2,16 @@ import React, { useContext, useState, useEffect } from "react";
 import "./detailsPost.css";
 import Spinner from "react-bootstrap/Spinner";
 import { PostsContext } from "../contexts/PostsContext";
+import CommentForm from "../comments/CommentForm";
+import { useNavigate } from "react-router-dom";
+import { ArrowBigLeft } from "lucide-react";
 
 const PostDetail = ({ post }) => {
   const { isPostsLoading, setIsPostsLoading } = useContext(PostsContext);
-
-  const [author, setAuthor] = useState("");
-  const [text, setText] = useState("");
   const [comments, setComments] = useState([]);
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingText, setEditingText] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (post?.comments?.length > 0) {
@@ -64,8 +65,7 @@ const PostDetail = ({ post }) => {
     }
   };
 
-  const handleCommentSubmit = async (e) => {
-    e.preventDefault();
+  const handleCommentSubmit = async ({ author, text }) => {
     try {
       const res = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/posts/${post._id}/comments`,
@@ -76,10 +76,8 @@ const PostDetail = ({ post }) => {
         }
       );
       if (res.ok) {
-        const newComment = await res.json(); // supponiamo che ritorni il commento salvato
+        const newComment = await res.json();
         setComments([...comments, newComment]);
-        setAuthor("");
-        setText("");
       }
     } catch (err) {
       console.error("Errore invio commento", err);
@@ -90,29 +88,38 @@ const PostDetail = ({ post }) => {
     return (
       <div className="d-flex justify-content-center">
         <Spinner animation="grow" variant="warning" />
-        <h4 className="text-dark">Loading...</h4>
+        <h4 className="text-dark ms-1">Loading...</h4>
       </div>
     );
   }
 
-  if (!post) return <p>Nessun libro selezionato.</p>;
+  if (!post) return <p>Neo book selected.</p>;
 
   return (
     <div className="row">
       <div className="col-12">
-        <div className="d-flex flex-column mt-5">
+        <div className="ms-3 mt-3">
+          <button
+            className="btn btn-outline-secondary d-flex align-items-center gap-2"
+            onClick={() => navigate("/posts")}
+          >
+            <ArrowBigLeft size={20} />
+            Back
+          </button>
+        </div>
+        <div className="d-flex flex-column mb-4 border rounded mt-5 ms-5 me-5">
           <img className="img-custom w-100" src={post.cover} alt="cover" />
           <div className="d-flex flex-column align-items-center mt-5">
             <h3 className="text-warning">
               <strong>{post.title}</strong>
             </h3>
-            <h5 className="text-danger">
+            <h4 className="text-danger">
               <strong>Category:</strong> {post.category}
-            </h5>
-            <h6>
+            </h4>
+            <p>
               <strong>Content:</strong>
-            </h6>
-            <div className="d-flex border rounded p-2 pb-4">{post.content}</div>
+            </p>
+            <div className="d-flex ms-4 me-4 m-2 mb-4">{post.content}</div>
           </div>
         </div>
         <div className="d-flex flex-column">
@@ -165,32 +172,12 @@ const PostDetail = ({ post }) => {
               <small>{new Date(comment.createdAt).toLocaleString()}</small>
             </div>
           ))}
-          <h3 className="d-flex justify-content-center mt-4 mb-4">
-            What do you think about this post?
-          </h3>
-          <form
-            className="d-flex flex-column justify-content-center align-items-center"
-            onSubmit={handleCommentSubmit}
-          >
-            <input
-              type="text"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              placeholder="Il tuo nome"
-              required
-              className="mb-2"
-            />
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Scrivi un commento..."
-              rows={3}
-              required
-            />
-            <button type="submit" className="btn btn-warning mt-2 mb-4">
-              Invia commento
-            </button>
-          </form>
+          <div className="border rounded p-3 mb-4">
+            <h3 className="d-flex justify-content-center mt-4 mb-4">
+              What do you think about this post?
+            </h3>
+            <CommentForm onSubmit={handleCommentSubmit} />
+          </div>
         </div>
       </div>
     </div>

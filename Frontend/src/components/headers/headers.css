@@ -6,3 +6,16 @@
   height: auto;
   height: 350px;
 }
+
+.email-field-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.custom-email-error {
+  color: red;
+  font-size: 0.875rem;
+  margin-left: 10px;
+  white-space: nowrap;
+}

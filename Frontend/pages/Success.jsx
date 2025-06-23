@@ -9,11 +9,10 @@ const Success = () => {
 
   useEffect(() => {
     if (token) {
-      // Decodifica opzionale
       const decodedToken = jwtDecode(token);
 
       localStorage.setItem("token", token);
-      // Naviga alla dashboard subito dopo aver salvato il token
+
       setTimeout(() => {
         navigate("/dashboard", { replace: true });
       }, 3000);

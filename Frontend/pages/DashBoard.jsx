@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import BaseLayout from "../layouts/BaseLayout";
 import AddPostForm from "../src/components/addPostForm/addPostForm";
-import Posts from "../src/components/posts/Posts";
+
 import useSession from "../src/hooks/useSession";
 import { useState, useEffect } from "react";
 
@@ -19,7 +19,7 @@ const DashBoard = () => {
       setShowWelcome(false);
     }, 5000);
 
-    return () => clearTimeout(timer); // pulizia se il componente viene smontato prima
+    return () => clearTimeout(timer);
   }, []);
 
   const user = useSession();
@@ -44,7 +44,6 @@ const DashBoard = () => {
           </div>
         </div>
         <AddPostForm />
-        <Posts />
       </BaseLayout>
     </>
   );

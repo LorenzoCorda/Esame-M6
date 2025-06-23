@@ -2,6 +2,7 @@ import { useContext } from "react";
 import SinglePost from "../singlePost/SinglePost";
 import { PostsContext } from "../contexts/PostsContext";
 import Spinner from "react-bootstrap/Spinner";
+import BaseLayout from "../../../layouts/BaseLayout";
 
 const Posts = () => {
   const { posts, isPostsLoading } = useContext(PostsContext);
@@ -16,14 +17,16 @@ const Posts = () => {
   }
   return (
     <>
-      <div className="container-fluid bg-white p-4">
-        <div className="row">
-          {posts &&
-            posts.map((post, idx) => (
-              <SinglePost key={`post-${post._id}-${idx}`} post={post} />
-            ))}
+      <BaseLayout>
+        <div className="container-fluid bg-white p-4">
+          <div className="row">
+            {posts &&
+              posts.map((post, idx) => (
+                <SinglePost key={`post-${post._id}-${idx}`} post={post} />
+              ))}
+          </div>
         </div>
-      </div>
+      </BaseLayout>
     </>
   );
 };
